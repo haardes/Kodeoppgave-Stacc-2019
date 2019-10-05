@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="style/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+  <title>Kodeoppgave 2019</title>
+</head>
+
+<body>
+  <h1 class="page-title">Lånekalkulator</h1>
+
+  <div class="flex-container">
+    <div class="canvas-container">
+      <canvas id="chart" width="600" height="200"></canvas>
+    </div>
+
+    <div class="loan-information">
+      <div>
+        <p class="monthly-cost">Månedsbeløp: <span>15 610</span> kr</p>
+        <p class="effective-interest">Effektiv rente: <span>3,241</span> %</p>
+        <p class="fee">Gebyrer: <span>1 080 kr</span></p>
+        <p class="total-interest">Rentebeløp: <span>986 419</span> kr</p>
+        <br />
+        <p class="total-cost">Totalbeløp: <span>3 987 499</span> kr</p>
+      </div>
+      <canvas id="pie" width="100px" height="100px"></canvas>
+    </div>
+
+    <div class="loan-details">
+      <div class="loan-total">
+        <h2>Lånebeløp</h2>
+        <div class="input-container loan-total">
+          <input type="range" name="loan-slider" id="loan-slider" value="2000000" min="500000" max="15000000"
+            step="100000" class="slider" />
+          <input type="number" name="loan-input" id="loan-input" value="2000000" />
+        </div>
+      </div>
+      <div class="duration">
+        <h2>Løpetid</h2>
+        <div class="input-container duration">
+          <input type="range" name="duration-slider" id="duration-slider" value="25" min="20" max="40" step="1"
+            class="slider" />
+          <input type="number" name="duration-input" id="duration-input" value="25" />
+        </div>
+      </div>
+      <div class="interest">
+        <h2>Nominell rente</h2>
+        <div class="input-container interest">
+          <input type="range" name="interest-slider" id="interest-slider" value="3" min="0" max="10" step="0.05"
+            class="slider" />
+          <input type="number" name="interest-input" id="interest-input" value="3" />
+        </div>
+      </div>
+      <div class="loan-type">
+        <h2>Serielån</h2>
+        <label class="switch">
+          <input type="checkbox" />
+          <span class="toggle"></span>
+        </label>
+        <h2>Annuitetslån</h2>
+      </div>
+      <div class="download">
+        <h2>Nedbetalingsplan</h2>
+        <button class="submit-btn" type="submit">Last ned</button>
+        <div class="extension-selector">
+          <p>Excel</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script/script.js"></script>
+</body>
+
+</html>

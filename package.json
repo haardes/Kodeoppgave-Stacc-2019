@@ -1,0 +1,22 @@
+{
+  "name": "kodeoppgave-stacc-2019",
+  "version": "1.0.0",
+  "description": "Kodeoppgave til teknisk intervju med Stacc",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haardes/Kodeoppgave-Stacc-2019.git"
+  },
+  "author": "Fredrik Haarde",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/haardes/Kodeoppgave-Stacc-2019/issues"
+  },
+  "homepage": "https://github.com/haardes/Kodeoppgave-Stacc-2019#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
