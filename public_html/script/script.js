@@ -2,24 +2,6 @@ window.onload = function () {
   getFromApi();
 };
 
-// Remove the option to submit a form by pressing Enter when inside an input
-window.addEventListener(
-  "keydown",
-  e => {
-    if (
-      e.keyIdentifier == "U+000A" ||
-      e.keyIdentifier == "Enter" ||
-      e.keyCode == 13
-    ) {
-      if (e.target.nodeName == "INPUT" && e.target.type == "number") {
-        e.preventDefault();
-        return false;
-      }
-    }
-  },
-  true
-);
-
 document.querySelectorAll(".input-container").forEach(div => {
   const slider = div.querySelector("input[type=range]");
   const input = div.querySelector("input[type=number]");
@@ -51,6 +33,14 @@ document.querySelectorAll(".input-container").forEach(div => {
 document.getElementById("loan-type").addEventListener("change", e => {
   getFromApi();
 });
+
+/* document.getElementById("download-btn").addEventListener("click", e => {
+  let xhr = new XMLHttpRequest();
+  let filetype = document.getElementById("file-extension").value;
+  let url = `/download/${filetype}`;
+  xhr.open("GET", url);
+  xhr.send();
+}); */
 
 var myChart;
 var myPie;

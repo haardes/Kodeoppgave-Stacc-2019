@@ -56,6 +56,35 @@
     padding: 2%;
 }
 
+.tooltip {
+    position: relative;
+    display: inline-block;
+    left: -12px;
+    top: 0;
+}
+
+.loan-type>.tooltip {
+    top: -25px;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    bottom: 0;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+
+
 /* Input/range styling start */
 .input-container {
     display: inline-flex;
@@ -119,22 +148,32 @@ input[type=number]:focus {
 
 /* Input/range styling end */
 
+i {
+    position: absolute;
+    top: 0;
+    left: -12px;
+}
+
 .loan-total {
     grid-area: total;
+    position: relative;
 }
 
 .duration {
     grid-area: duration;
+    position: relative;
 }
 
 .interest {
     grid-area: interest;
+    position: relative;
 }
 
 .loan-type {
     grid-area: type;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 /* On/off switch start*/
