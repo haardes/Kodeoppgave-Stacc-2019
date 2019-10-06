@@ -1,5 +1,5 @@
 window.onload = function () {
-  getPaymentPlan();
+  getFromApi();
 };
 
 // Remove the option to submit a form by pressing Enter when inside an input
@@ -29,7 +29,7 @@ document.querySelectorAll(".input-container").forEach(div => {
   });
 
   slider.addEventListener("change", e => {
-    getPaymentPlan();
+    getFromApi();
   });
 
   input.addEventListener("change", e => {
@@ -44,24 +44,48 @@ document.querySelectorAll(".input-container").forEach(div => {
     e.target.value = rounded;
     slider.value = rounded;
 
-    getPaymentPlan();
+    getFromApi();
   });
+});
+
+document.getElementById("loan-type").addEventListener("change", e => {
+  getFromApi();
 });
 
 var myChart;
 var myPie;
 
-function getPaymentPlan() {
-  var xhr = new XMLHttpRequest();
-  var url = "https://visningsrom.stacc.com/dd_server_laaneberegning/rest/laaneberegning/v1/nedbetalingsplan";
+function postJSON(url, data) {
+  let xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send(data);
+  return xhr;
+}
+
+function getFromApi() {
+  let url = "/api";
+  let data = JSON.stringify({
+    "laanebelop": document.getElementById("loan-slider").valueAsNumber,
+    "nominellRente": document.getElementById("interest-slider").valueAsNumber,
+    "lopetid": document.getElementById("duration-slider").valueAsNumber,
+    "terminGebyr": 30,
+    "saldoDato": "2020-01-01",
+    "laanetype": (document.getElementById("loan-type").checked) ? "SERIE" : "ANNUITET"
+  });
+
+  let xhr = postJSON(url, data);
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      var json = JSON.parse(xhr.responseText);
-      prepareData(json.nedbetalingsplan.innbetalinger);
+      let json = JSON.parse(xhr.responseText);
+      console.log(json);
+      prepareData(json.nedbetalingsplan);
     }
   };
+}
+
+/* function getPaymentPlan() {
+  var url = "https://visningsrom.stacc.com/dd_server_laaneberegning/rest/laaneberegning/v1/nedbetalingsplan";
   var data = JSON.stringify({
     "laanebelop": document.getElementById("loan-slider").valueAsNumber,
     "nominellRente": document.getElementById("interest-slider").valueAsNumber,
@@ -72,30 +96,48 @@ function getPaymentPlan() {
     "ukjentVerdi": "TERMINBELOP"
   });
 
-  xhr.send(data);
-}
+  let xhr = postJSON(url, data);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      let json = JSON.parse(xhr.responseText);
+      console.log(json);
+      prepareData(json.nedbetalingsplan.innbetalinger);
+    }
+  };
+} */
 
 
-function prepareData(innbetalinger) {
+function prepareData(nedbetalingsplan) {
   let data = {
-    restbeløp: [],
+    restbelop: [],
     avdrag: [],
     renter: [],
     dato: [],
-    totalRenter: 0,
-    totalGebyr: 0,
-    totalKost: document.getElementById("loan-slider").valueAsNumber
+    gebyrerTotalt: nedbetalingsplan.gebyrerTotalt,
+    renterTotalt: nedbetalingsplan.renterTotalt,
+    totalBelop: nedbetalingsplan.totalBelop,
+    effektivRente: nedbetalingsplan.effektivRente
   }
 
-  innbetalinger.forEach(innbetaling => {
-    data.restbeløp.push(innbetaling.restgjeld);
-    data.avdrag.push(innbetaling.innbetaling);
+  nedbetalingsplan.innbetalinger.forEach(innbetaling => {
+    data.restbelop.push(innbetaling.restbelop);
+    data.avdrag.push(innbetaling.avdrag);
     data.renter.push(innbetaling.renter);
-    data.dato.push(innbetaling.dato);
-    data.totalRenter += innbetaling.renter;
-    data.totalGebyr += innbetaling.gebyr;
-    data.totalKost += (innbetaling.renter + innbetaling.gebyrer);
+    data.dato.push(innbetaling.dato.substring(0, 10));
   });
+
+  document.querySelector(".total-cost>span").innerHTML = `${(data.totalBelop).toFixed(0)}`;
+  document.querySelector(".total-interest>span").innerHTML = `${(data.renterTotalt).toFixed(0)}`;
+  document.querySelector(".fee>span").innerHTML = `${data.gebyrerTotalt}`;
+  document.querySelector(".effective-interest>span").innerHTML = `${(data.effektivRente).toFixed(3)}`;
+
+  if (document.getElementById("loan-type").checked) {
+    document.querySelector(".monthly-cost>span").innerHTML =
+      `${(data.renter[1] + data.avdrag[1]).toFixed(0)} - ${(data.renter[data.renter.length -1] + 
+      data.avdrag[data.avdrag.length-1]).toFixed(0)}`;
+  } else {
+    document.querySelector(".monthly-cost>span").innerHTML = `${(data.renter[1] + data.avdrag[1] + nedbetalingsplan.terminGebyr).toFixed(0)}`;
+  }
 
   renderChart(data);
 }
@@ -115,7 +157,7 @@ function renderChart(data) {
       labels: data.dato,
       datasets: [{
         label: "Restbeløp",
-        data: data.restbeløp,
+        data: data.restbelop,
         yAxisID: "A",
         pointRadius: 0,
         borderColor: "rgb(2, 26, 238)",
@@ -178,7 +220,7 @@ function renderChart(data) {
     data: {
       datasets: [{
         label: 'Fordeling',
-        data: [document.getElementById("loan-slider").valueAsNumber, data.totalGebyr, data.totalRenter],
+        data: [document.getElementById("loan-slider").valueAsNumber, data.gebyrerTotalt, data.renterTotalt],
         backgroundColor: ["rgb(2, 26, 238)", "rgb(0, 255, 0)", "rgb(227, 4, 37)"]
       }],
       labels: ["Nedbetaling lån", "Gebyrer", "Renter"]
@@ -192,73 +234,3 @@ function renderChart(data) {
   });
 
 }
-
-
-
-/* function calculateLoan() {
-
-  generatePaymentPlan(
-
-    document.getElementById("loan-slider").valueAsNumber,
-
-    30,
-
-    document.getElementById("interest-slider").valueAsNumber,
-
-    document.getElementById("duration-slider").valueAsNumber
-
-  );
-
-}
-
-
-
-function generatePaymentPlan(loan, fee, interest, duration) {
-
-  let plan = {
-                    betalinger: []
-                  };
-
-                  calculatePayment(loan, fee, interest / 100, duration * 12, plan.betalinger);
-                  console.log(plan);
-
-                  let total = 0;
-                  let totalFees = 0;
-                  plan.betalinger.forEach(betaling => {
-                    total += betaling.total;
-                    totalFees += betaling.renter;
-                    totalFees += betaling.gebyrer;
-                  });
-
-                  console.log(`Totalbeløp: ${total}`);
-                  console.log(`Totalt renter/gebyrer: ${totalFees}`);
-
-                  return plan;
-                }
-
-                /**
-                 * En rekursiv funksjon for å generere en samling av betalinger
-                 *
-                 * @param {Number} balance Restbeløp av lånet
-                 * @param {Number} fee Gebyr, per måned
-                 * @param {Number} interest Nominell rente som "heltall"
-                 * @param {Number} timeRemaining Antall måneder igjen å betale på lånet
-                 * @param {Array} arr Samling der betalings-objektene skal settes inn
-                 *
-                function calculatePayment(balance, fee, interest, timeRemaining, arr) {
-                  const avdrag = balance / timeRemaining;
-                  const renter = (balance * interest) / 12;
-
-                  arr.push({
-                    restbeløp: balance,
-                    dato: null,
-                    avdrag: avdrag,
-                    gebyrer: fee,
-                    renter: renter,
-                    total: avdrag + renter
-                  });
-
-                  if (timeRemaining > 1) {
-                    calculatePayment(balance - avdrag, fee, interest, timeRemaining - 1, arr);
-                  }
-                } */
