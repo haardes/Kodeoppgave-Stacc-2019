@@ -244,6 +244,20 @@ input:checked+.toggle:before {
     align-items: center;
 }
 
-.submit-btn {
-    height: 50%;
+#download-btn {
+    background: white;
+    color: black;
+    border: 2px solid #021aee;
+    border-radius: 15px;
+    padding: 4px 8px;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+#download-btn:hover {
+    background: #021aee;
+    color: white;
 }

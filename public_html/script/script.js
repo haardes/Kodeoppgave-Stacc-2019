@@ -34,13 +34,10 @@ document.getElementById("loan-type").addEventListener("change", e => {
   getFromApi();
 });
 
-/* document.getElementById("download-btn").addEventListener("click", e => {
-  let xhr = new XMLHttpRequest();
+document.getElementById("download-btn").addEventListener("click", e => {
   let filetype = document.getElementById("file-extension").value;
-  let url = `/download/${filetype}`;
-  xhr.open("GET", url);
-  xhr.send();
-}); */
+  window.location.href = `/download/${filetype}`;
+});
 
 var myChart;
 var myPie;

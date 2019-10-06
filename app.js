@@ -1,6 +1,5 @@
 const express = require("express");
 const fs = require("fs");
-const path = require("path");
 const serial = require("./plan/serial");
 const ammortising = require("./plan/ammortising");
 const app = express();
@@ -35,6 +34,54 @@ app.post("/api", (req, res) => {
 
     res.json({
         nedbetalingsplan
+    });
+});
+
+app.get("/download/json", (req, res) => {
+    if (!nedbetalingsplan) {
+        return;
+    }
+
+    let content = JSON.stringify(nedbetalingsplan);
+
+    fs.writeFile("nedbetalingsplan.json", content, (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.setHeader('Content-Disposition', 'attachment;filename=' + "nedbetalingsplan.json" + '');
+            res.sendFile("C:\\Users\\fredr\\OneDrive\\Skrivebord\\Programmering\\FullStack\\Kodeoppgave-Stacc-2019\\nedbetalingsplan.json");
+        }
+    });
+});
+
+app.get("/download/csv", (req, res) => {
+    if (!nedbetalingsplan) {
+        return;
+    }
+
+    const outFileName = "nedbetalingsplan.csv";
+
+    let CSVString = "DATO:,GEBYRER:,TERMINBELOP:,RENTER:,AVDRAG:,RESTBELOP:";
+
+    nedbetalingsplan.innbetalinger.forEach(bet => {
+        CSVString += "\n";
+        CSVString += `${bet.dato},${bet.gebyrer},${bet.terminbelop},${bet.renter},${bet.avdrag},${bet.restbelop}`;
+
+        //Forårsaker en feil i rekkefølgen på elementene
+        /* Object.keys(bet).forEach(key => {
+            CSVString += `${bet[key]},`;
+        }); */
+    });
+
+    fs.writeFile(outFileName, CSVString, err => {
+        if (err) {
+            console.log(err);
+        }
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment;filename=' + "nedbetalingsplan.csv" + '');
+        res.sendFile("C:\\Users\\fredr\\OneDrive\\Skrivebord\\Programmering\\FullStack\\Kodeoppgave-Stacc-2019\\nedbetalingsplan.csv");
     });
 });
 
