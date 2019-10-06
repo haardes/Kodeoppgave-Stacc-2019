@@ -8,20 +8,11 @@ app.use(express.static('public_html'));
 app.use(express.json());
 
 app.post("/api", (req, res) => {
-    let errorMessages = [];
     if (req.headers["content-type"] != "application/json") {
-        errorMessages.push({
-            headerError: "Content-type is not 'application/json'"
-        });
-
         return;
     }
 
     if (!req.body.laanetype) {
-        errorMessages.push({
-            bodyError: "laanetype not specified"
-        });
-
         return;
     }
 
