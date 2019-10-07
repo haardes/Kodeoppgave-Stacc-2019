@@ -18,6 +18,10 @@
     margin-left: 1%;
 }
 
+canvas {
+    max-height: 350px;
+}
+
 .loan-information {
     flex: 1 0 30%;
     margin-right: 2%;
