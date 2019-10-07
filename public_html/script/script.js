@@ -3,8 +3,8 @@ window.onload = function () {
 };
 
 document.querySelectorAll(".input-container").forEach(div => {
-  const slider = div.querySelector("input[type=range]");
-  const input = div.querySelector("input[type=number]");
+  let slider = div.querySelector("input[type=range]");
+  let input = div.querySelector("input[type=number]");
 
   slider.addEventListener("input", e => {
     input.value = e.target.valueAsNumber;
@@ -174,7 +174,7 @@ function renderChart(data) {
         mode: "index",
         callbacks: {
           label: function (tooltipItem, data) {
-            var label = data.datasets[tooltipItem.datasetIndex].label || '';
+            let label = data.datasets[tooltipItem.datasetIndex].label || '';
 
             if (label) {
               label += ': ';

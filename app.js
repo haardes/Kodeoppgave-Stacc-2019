@@ -50,7 +50,7 @@ app.get("/download/json", (req, res) => {
         } else {
             res.setHeader('Content-Type', 'application/json');
             res.setHeader('Content-Disposition', 'attachment;filename=' + "nedbetalingsplan.json" + '');
-            res.sendFile("C:\\Users\\fredr\\OneDrive\\Skrivebord\\Programmering\\FullStack\\Kodeoppgave-Stacc-2019\\nedbetalingsplan.json");
+            res.sendFile(__dirname + "/nedbetalingsplan.json");
         }
     });
 });
@@ -81,7 +81,7 @@ app.get("/download/csv", (req, res) => {
 
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment;filename=' + "nedbetalingsplan.csv" + '');
-        res.sendFile("C:\\Users\\fredr\\OneDrive\\Skrivebord\\Programmering\\FullStack\\Kodeoppgave-Stacc-2019\\nedbetalingsplan.csv");
+        res.sendFile(__dirname + "/nedbetalingsplan.csv");
     });
 });
 
